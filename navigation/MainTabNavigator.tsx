@@ -2,14 +2,19 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { Platform, StyleSheet } from "react-native";
-import HomeStackNavigator from "@/navigation/HomeStackNavigator";
-import ProfileStackNavigator from "@/navigation/ProfileStackNavigator";
+import { Platform, StyleSheet, Pressable } from "react-native";
+import TodayStackNavigator from "@/navigation/TodayStackNavigator";
+import CalendarStackNavigator from "@/navigation/CalendarStackNavigator";
+import CustomersStackNavigator from "@/navigation/CustomersStackNavigator";
+import MoreStackNavigator from "@/navigation/MoreStackNavigator";
 import { useTheme } from "@/hooks/useTheme";
 
 export type MainTabParamList = {
-  HomeTab: undefined;
-  ProfileTab: undefined;
+  TodayTab: undefined;
+  CalendarTab: undefined;
+  AddTab: undefined;
+  CustomersTab: undefined;
+  MoreTab: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -19,7 +24,7 @@ export default function MainTabNavigator() {
 
   return (
     <Tab.Navigator
-      initialRouteName="HomeTab"
+      initialRouteName="TodayTab"
       screenOptions={{
         tabBarActiveTintColor: theme.tabIconSelected,
         tabBarInactiveTintColor: theme.tabIconDefault,
@@ -44,22 +49,60 @@ export default function MainTabNavigator() {
       }}
     >
       <Tab.Screen
-        name="HomeTab"
-        component={HomeStackNavigator}
+        name="TodayTab"
+        component={TodayStackNavigator}
         options={{
-          title: "Home",
+          title: "Today",
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" size={size} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name="ProfileTab"
-        component={ProfileStackNavigator}
+        name="CalendarTab"
+        component={CalendarStackNavigator}
         options={{
-          title: "Profile",
+          title: "Calendar",
           tabBarIcon: ({ color, size }) => (
-            <Feather name="user" size={size} color={color} />
+            <Feather name="calendar" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AddTab"
+        component={() => null}
+        options={{
+          title: "",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="plus-circle" size={size} color={color} />
+          ),
+        }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            (navigation as any).navigate("TodayTab", {
+              screen: "QuickAdd",
+            });
+          },
+        })}
+      />
+      <Tab.Screen
+        name="CustomersTab"
+        component={CustomersStackNavigator}
+        options={{
+          title: "Customers",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="users" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="MoreTab"
+        component={MoreStackNavigator}
+        options={{
+          title: "More",
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="menu" size={size} color={color} />
           ),
         }}
       />
