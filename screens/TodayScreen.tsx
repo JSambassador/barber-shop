@@ -205,6 +205,7 @@ export default function TodayScreen() {
       </ScreenScrollView>
 
       <Pressable
+        onPress={() => (navigation as any).navigate("CustomersTab", { screen: "Customers" })}
         style={[
           styles.fab,
           {
