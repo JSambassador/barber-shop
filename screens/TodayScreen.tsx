@@ -10,11 +10,13 @@ import { Feather } from "@expo/vector-icons";
 import { MOCK_APPOINTMENTS, MOCK_QUEUE, MOCK_SERVICES, MOCK_CUSTOMERS } from "@/models/mockData";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
 
 export default function TodayScreen() {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
+  const navigation = useNavigation();
   const [queue, setQueue] = useState(MOCK_QUEUE);
   const [appointments, setAppointments] = useState(MOCK_APPOINTMENTS);
 
@@ -65,6 +67,12 @@ export default function TodayScreen() {
         <View style={styles.headerRight}>
           <Pressable style={styles.iconButton}>
             <Feather name="bell" size={24} color={theme.text} />
+          </Pressable>
+          <Pressable
+            style={styles.iconButton}
+            onPress={() => (navigation as any).navigate("MoreTab", { screen: "Settings" })}
+          >
+            <Feather name="user" size={24} color={theme.text} />
           </Pressable>
         </View>
       </View>
