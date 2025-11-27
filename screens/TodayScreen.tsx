@@ -68,12 +68,6 @@ export default function TodayScreen() {
           <Pressable style={styles.iconButton}>
             <Feather name="bell" size={24} color={theme.text} />
           </Pressable>
-          <Pressable
-            style={styles.iconButton}
-            onPress={() => (navigation as any).navigate("MoreTab", { screen: "Settings" })}
-          >
-            <Feather name="user" size={24} color={theme.text} />
-          </Pressable>
         </View>
       </View>
 
@@ -175,24 +169,6 @@ export default function TodayScreen() {
               );
             })
           )}
-        </View>
-
-        <View style={styles.section}>
-          <Pressable
-            onPress={() => (navigation as any).navigate("CustomersTab", { screen: "Customers" })}
-            style={({ pressed }) => [
-              styles.addUserButton,
-              {
-                backgroundColor: theme.primary,
-                opacity: pressed ? 0.8 : 1,
-              },
-            ]}
-          >
-            <Feather name="user-plus" size={20} color={theme.buttonText} />
-            <ThemedText style={[styles.addUserButtonText, { color: theme.buttonText }]}>
-              Add New Customer
-            </ThemedText>
-          </Pressable>
         </View>
 
         <View style={styles.section}>
