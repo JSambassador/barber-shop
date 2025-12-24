@@ -16,7 +16,7 @@ export interface Service {
   description: string;
   price: number;
   duration: number;
-  photo?: string;
+  photo?: any;
   category?: "cut" | "beard" | "kids" | "other";
 }
 

@@ -36,7 +36,7 @@ export default function ServicesScreen() {
               ]}
             >
               <Card style={styles.serviceCard}>
-                {service.photo && (
+                {service.photo && typeof service.photo === 'number' && (
                   <Image
                     source={service.photo}
                     style={styles.servicePhoto}
@@ -112,7 +112,7 @@ export default function ServicesScreen() {
           </View>
 
           <ScrollView contentContainerStyle={styles.modalContent}>
-            {currentService?.photo && (
+            {currentService?.photo && typeof currentService.photo === 'number' && (
               <Image
                 source={currentService.photo}
                 style={styles.largeServicePhoto}
