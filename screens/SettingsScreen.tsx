@@ -8,6 +8,8 @@ import { useColorScheme } from "react-native";
 import { Spacing } from "@/constants/theme";
 import { Feather } from "@expo/vector-icons";
 import { useSyncData } from "@/hooks/useSyncData";
+import { useLanguage } from "@/hooks/useLanguage";
+import type { Language } from "@/constants/translations";
 
 export default function SettingsScreen() {
   const { theme } = useTheme();
@@ -16,6 +18,7 @@ export default function SettingsScreen() {
   const { isSyncing, lastSyncTime, error, syncToServer, syncFromServer, checkServerHealth } =
     useSyncData();
   const [serverOnline, setServerOnline] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
     checkServerHealth().then(setServerOnline);
@@ -40,7 +43,39 @@ export default function SettingsScreen() {
   return (
     <ScreenScrollView>
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Server Sync</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{t('language')}</ThemedText>
+        <Card>
+          <View style={styles.languageRow}>
+            {(['en', 'ru', 'uk'] as Language[]).map((lang) => (
+              <Pressable
+                key={lang}
+                onPress={() => setLanguage(lang)}
+                style={[
+                  styles.languageButton,
+                  {
+                    backgroundColor: language === lang ? theme.primary : theme.backgroundDefault,
+                    borderColor: language === lang ? theme.primary : theme.border,
+                  },
+                ]}
+              >
+                <ThemedText
+                  style={[
+                    styles.languageButtonText,
+                    {
+                      color: language === lang ? theme.buttonText : theme.text,
+                    },
+                  ]}
+                >
+                  {lang === 'en' ? 'English' : lang === 'ru' ? 'Русский' : 'Українська'}
+                </ThemedText>
+              </Pressable>
+            ))}
+          </View>
+        </Card>
+      </View>
+
+      <View style={styles.section}>
+        <ThemedText style={styles.sectionTitle}>{t('serverSync')}</ThemedText>
         <Card style={styles.card}>
           <View style={styles.syncHeader}>
             <View style={styles.serverStatus}>
@@ -53,7 +88,7 @@ export default function SettingsScreen() {
                 ]}
               />
               <ThemedText style={styles.serverStatusText}>
-                {serverOnline ? "Server Online" : "Server Offline"}
+                {serverOnline ? t('serverOnline') : t('serverOffline')}
               </ThemedText>
             </View>
           </View>
@@ -88,7 +123,7 @@ export default function SettingsScreen() {
                 <Feather name="upload" size={18} color={theme.buttonText} />
               )}
               <ThemedText style={[styles.syncButtonText, { color: theme.buttonText }]}>
-                {isSyncing ? "Syncing..." : "Upload Data"}
+                {isSyncing ? t('syncing') : t('uploadData')}
               </ThemedText>
             </Pressable>
 
@@ -109,7 +144,7 @@ export default function SettingsScreen() {
                 <Feather name="download" size={18} color={theme.buttonText} />
               )}
               <ThemedText style={[styles.syncButtonText, { color: theme.buttonText }]}>
-                {isSyncing ? "Syncing..." : "Download Data"}
+                {isSyncing ? t('syncing') : t('downloadData')}
               </ThemedText>
             </Pressable>
           </View>
@@ -117,12 +152,12 @@ export default function SettingsScreen() {
       </View>
 
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Appearance</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{t('darkMode')}</ThemedText>
         <Card>
           <View style={styles.settingRow}>
             <View style={styles.settingLeft}>
               <Feather name="moon" size={20} color={theme.textSecondary} />
-              <ThemedText style={styles.settingText}>Dark Mode</ThemedText>
+              <ThemedText style={styles.settingText}>{t('darkMode')}</ThemedText>
             </View>
             <Switch
               value={isDarkMode}
@@ -279,5 +314,22 @@ const styles = StyleSheet.create({
   versionText: {
     textAlign: "center",
     fontSize: 14,
+  },
+  languageRow: {
+    flexDirection: "row",
+    gap: Spacing.md,
+    justifyContent: "space-between",
+  },
+  languageButton: {
+    flex: 1,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  languageButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
   },
 });

@@ -11,12 +11,14 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { CustomersStackParamList } from "@/navigation/CustomersStackNavigator";
 import { useCallback } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 type NavigationProp = NativeStackNavigationProp<CustomersStackParamList>;
 
 export default function CustomersScreen() {
   const { theme } = useTheme();
   const navigation = useNavigation<NavigationProp>();
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [customers, setCustomers] = useState(MOCK_CUSTOMERS);
 
@@ -103,7 +105,7 @@ export default function CustomersScreen() {
           <TextInput
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholder="Search customers..."
+            placeholder={t('searchCustomers')}
             placeholderTextColor={theme.textSecondary}
             style={[styles.searchInput, { color: theme.text }]}
           />
@@ -114,12 +116,10 @@ export default function CustomersScreen() {
         <View style={styles.emptyContainer}>
           <Feather name="users" size={48} color={theme.textSecondary} />
           <ThemedText style={styles.emptyText}>
-            {searchQuery ? "No customers found" : "No customers yet"}
+            {searchQuery ? t('noCustomers') : t('noCustomers')}
           </ThemedText>
           <ThemedText style={styles.emptySubtext}>
-            {searchQuery
-              ? "Try a different search"
-              : "Add your first customer to get started"}
+            {searchQuery ? t('tryDifferentSearch') : t('addCustomer')}
           </ThemedText>
         </View>
       ) : (
