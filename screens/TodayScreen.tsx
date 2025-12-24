@@ -19,6 +19,7 @@ export default function TodayScreen() {
   const navigation = useNavigation();
   const [queue, setQueue] = useState(MOCK_QUEUE);
   const [appointments, setAppointments] = useState(MOCK_APPOINTMENTS);
+  const [activeTab, setActiveTab] = useState<"appointments" | "walkin">("appointments");
 
   const today = new Date();
   const dateString = today.toLocaleDateString("en-US", {
@@ -71,105 +72,158 @@ export default function TodayScreen() {
         </View>
       </View>
 
+      <View style={[styles.tabContainer, { backgroundColor: theme.backgroundDefault, borderBottomColor: theme.border }]}>
+        <Pressable
+          onPress={() => setActiveTab("appointments")}
+          style={[
+            styles.tab,
+            {
+              borderBottomColor: activeTab === "appointments" ? theme.primary : "transparent",
+              borderBottomWidth: activeTab === "appointments" ? 2 : 0,
+            },
+          ]}
+        >
+          <ThemedText
+            style={[
+              styles.tabText,
+              {
+                color: activeTab === "appointments" ? theme.primary : theme.textSecondary,
+                fontWeight: activeTab === "appointments" ? "700" : "600",
+              },
+            ]}
+          >
+            Appointments
+          </ThemedText>
+        </Pressable>
+        <Pressable
+          onPress={() => setActiveTab("walkin")}
+          style={[
+            styles.tab,
+            {
+              borderBottomColor: activeTab === "walkin" ? theme.primary : "transparent",
+              borderBottomWidth: activeTab === "walkin" ? 2 : 0,
+            },
+          ]}
+        >
+          <ThemedText
+            style={[
+              styles.tabText,
+              {
+                color: activeTab === "walkin" ? theme.primary : theme.textSecondary,
+                fontWeight: activeTab === "walkin" ? "700" : "600",
+              },
+            ]}
+          >
+            Walk-in Queue
+          </ThemedText>
+        </Pressable>
+      </View>
+
       <ScreenScrollView contentContainerStyle={styles.scrollContent}>
-        {queue.length > 0 && (
+        {activeTab === "walkin" ? (
           <View style={styles.section}>
-            <ThemedText style={styles.sectionTitle}>Walk-in Queue</ThemedText>
-            {queue.map((customer, index) => {
-              const service = MOCK_SERVICES.find((s) => s.id === customer.serviceId);
-              return (
-                <Card key={customer.id} style={styles.queueCard}>
-                  <View style={styles.queueContent}>
-                    <View
-                      style={[
-                        styles.queuePosition,
-                        { backgroundColor: theme.primary },
-                      ]}
-                    >
-                      <ThemedText
+            {queue.length === 0 ? (
+              <Card style={styles.emptyCard}>
+                <ThemedText style={{ color: theme.textSecondary, textAlign: "center" }}>
+                  No walk-ins in queue
+                </ThemedText>
+              </Card>
+            ) : (
+              queue.map((customer, index) => {
+                const service = MOCK_SERVICES.find((s) => s.id === customer.serviceId);
+                return (
+                  <Card key={customer.id} style={styles.queueCard}>
+                    <View style={styles.queueContent}>
+                      <View
                         style={[
-                          styles.queuePositionText,
-                          { color: theme.buttonText },
+                          styles.queuePosition,
+                          { backgroundColor: theme.primary },
                         ]}
                       >
-                        {index + 1}
-                      </ThemedText>
+                        <ThemedText
+                          style={[
+                            styles.queuePositionText,
+                            { color: theme.buttonText },
+                          ]}
+                        >
+                          {index + 1}
+                        </ThemedText>
+                      </View>
+                      <View style={styles.queueInfo}>
+                        <ThemedText style={styles.queueName}>
+                          {customer.name}
+                        </ThemedText>
+                        <ThemedText style={{ color: theme.textSecondary }}>
+                          {service?.name} • {customer.estimatedWaitTime} min wait
+                        </ThemedText>
+                      </View>
+                      <Pressable
+                        onPress={() => removeFromQueue(customer.id)}
+                        style={({ pressed }) => [
+                          styles.queueAction,
+                          { opacity: pressed ? 0.5 : 1 },
+                        ]}
+                      >
+                        <Feather name="check" size={24} color={theme.success} />
+                      </Pressable>
                     </View>
-                    <View style={styles.queueInfo}>
-                      <ThemedText style={styles.queueName}>
-                        {customer.name}
-                      </ThemedText>
-                      <ThemedText style={{ color: theme.textSecondary }}>
-                        {service?.name} • {customer.estimatedWaitTime} min wait
-                      </ThemedText>
+                  </Card>
+                );
+              })
+            )}
+          </View>
+        ) : (
+          <View style={styles.section}>
+            {todayAppointments.length === 0 ? (
+              <Card style={styles.emptyCard}>
+                <ThemedText style={{ color: theme.textSecondary, textAlign: "center" }}>
+                  No appointments scheduled for today
+                </ThemedText>
+              </Card>
+            ) : (
+              todayAppointments.map((apt) => {
+                const customer = MOCK_CUSTOMERS.find((c) => c.id === apt.customerId);
+                const service = MOCK_SERVICES.find((s) => s.id === apt.serviceId);
+                return (
+                  <Card key={apt.id} style={styles.appointmentCard}>
+                    <View style={styles.appointmentContent}>
+                      <View style={styles.timeContainer}>
+                        <ThemedText style={styles.timeText}>{apt.time}</ThemedText>
+                      </View>
+                      <View style={styles.appointmentInfo}>
+                        <ThemedText style={styles.customerName}>
+                          {customer?.name || "Unknown"}
+                        </ThemedText>
+                        <ThemedText style={{ color: theme.textSecondary }}>
+                          {service?.name} • ${service?.price}
+                        </ThemedText>
+                      </View>
+                      <View
+                        style={[
+                          styles.statusBadge,
+                          {
+                            backgroundColor:
+                              apt.status === "confirmed"
+                                ? theme.success
+                                : apt.status === "pending"
+                                ? theme.warning
+                                : theme.error,
+                          },
+                        ]}
+                      >
+                        <ThemedText
+                          style={[styles.statusText, { color: "#FFFFFF" }]}
+                        >
+                          {apt.status}
+                        </ThemedText>
+                      </View>
                     </View>
-                    <Pressable
-                      onPress={() => removeFromQueue(customer.id)}
-                      style={({ pressed }) => [
-                        styles.queueAction,
-                        { opacity: pressed ? 0.5 : 1 },
-                      ]}
-                    >
-                      <Feather name="check" size={24} color={theme.success} />
-                    </Pressable>
-                  </View>
-                </Card>
-              );
-            })}
+                  </Card>
+                );
+              })
+            )}
           </View>
         )}
-
-        <View style={styles.section}>
-          <ThemedText style={styles.sectionTitle}>Today's Schedule</ThemedText>
-          {todayAppointments.length === 0 ? (
-            <Card style={styles.emptyCard}>
-              <ThemedText style={{ color: theme.textSecondary, textAlign: "center" }}>
-                No appointments scheduled for today
-              </ThemedText>
-            </Card>
-          ) : (
-            todayAppointments.map((apt) => {
-              const customer = MOCK_CUSTOMERS.find((c) => c.id === apt.customerId);
-              const service = MOCK_SERVICES.find((s) => s.id === apt.serviceId);
-              return (
-                <Card key={apt.id} style={styles.appointmentCard}>
-                  <View style={styles.appointmentContent}>
-                    <View style={styles.timeContainer}>
-                      <ThemedText style={styles.timeText}>{apt.time}</ThemedText>
-                    </View>
-                    <View style={styles.appointmentInfo}>
-                      <ThemedText style={styles.customerName}>
-                        {customer?.name || "Unknown"}
-                      </ThemedText>
-                      <ThemedText style={{ color: theme.textSecondary }}>
-                        {service?.name} • ${service?.price}
-                      </ThemedText>
-                    </View>
-                    <View
-                      style={[
-                        styles.statusBadge,
-                        {
-                          backgroundColor:
-                            apt.status === "confirmed"
-                              ? theme.success
-                              : apt.status === "pending"
-                              ? theme.warning
-                              : theme.error,
-                        },
-                      ]}
-                    >
-                      <ThemedText
-                        style={[styles.statusText, { color: "#FFFFFF" }]}
-                      >
-                        {apt.status}
-                      </ThemedText>
-                    </View>
-                  </View>
-                </Card>
-              );
-            })
-          )}
-        </View>
 
         <View style={styles.section}>
           <ThemedText style={styles.sectionTitle}>Quick Stats</ThemedText>
@@ -223,6 +277,20 @@ export default function TodayScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  tabContainer: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+  },
+  tab: {
+    flex: 1,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.lg,
+    alignItems: "center",
+    borderBottomWidth: 2,
+  },
+  tabText: {
+    fontSize: 16,
   },
   header: {
     flexDirection: "row",
