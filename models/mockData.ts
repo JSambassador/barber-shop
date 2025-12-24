@@ -7,6 +7,8 @@ export const MOCK_SERVICES: Service[] = [
     description: "Traditional haircut with scissors and clippers",
     price: 35,
     duration: 30,
+    category: "cut",
+    photo: require("@/assets/service-images/classic_haircut_style.png"),
   },
   {
     id: "2",
@@ -14,6 +16,8 @@ export const MOCK_SERVICES: Service[] = [
     description: "Modern fade haircut with precision blending",
     price: 40,
     duration: 45,
+    category: "cut",
+    photo: require("@/assets/service-images/modern_fade_haircut.png"),
   },
   {
     id: "3",
@@ -21,6 +25,8 @@ export const MOCK_SERVICES: Service[] = [
     description: "Professional beard shaping and trimming",
     price: 20,
     duration: 15,
+    category: "beard",
+    photo: require("@/assets/service-images/professional_beard_trim.png"),
   },
   {
     id: "4",
@@ -28,6 +34,8 @@ export const MOCK_SERVICES: Service[] = [
     description: "Haircut for children 12 and under",
     price: 25,
     duration: 25,
+    category: "kids",
+    photo: require("@/assets/service-images/kids_haircut_style.png"),
   },
 ];
 

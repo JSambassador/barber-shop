@@ -16,6 +16,8 @@ export interface Service {
   description: string;
   price: number;
   duration: number;
+  photo?: string;
+  category?: "cut" | "beard" | "kids" | "other";
 }
 
 export interface Appointment {
