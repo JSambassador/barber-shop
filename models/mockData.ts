@@ -1,5 +1,12 @@
 import { Customer, Service, Appointment, QueueCustomer } from "./types";
 
+export const SERVICE_PHOTOS = {
+  classic: require("@/assets/service-images/classic_haircut_style.png"),
+  fade: require("@/assets/service-images/modern_fade_haircut.png"),
+  beard: require("@/assets/service-images/professional_beard_trim.png"),
+  kids: require("@/assets/service-images/kids_haircut_style.png"),
+};
+
 export const MOCK_SERVICES: Service[] = [
   {
     id: "1",
@@ -8,7 +15,7 @@ export const MOCK_SERVICES: Service[] = [
     price: 35,
     duration: 30,
     category: "cut",
-    photo: require("@/assets/service-images/classic_haircut_style.png"),
+    photo: SERVICE_PHOTOS.classic,
   },
   {
     id: "2",
@@ -17,7 +24,7 @@ export const MOCK_SERVICES: Service[] = [
     price: 40,
     duration: 45,
     category: "cut",
-    photo: require("@/assets/service-images/modern_fade_haircut.png"),
+    photo: SERVICE_PHOTOS.fade,
   },
   {
     id: "3",
@@ -26,7 +33,7 @@ export const MOCK_SERVICES: Service[] = [
     price: 20,
     duration: 15,
     category: "beard",
-    photo: require("@/assets/service-images/professional_beard_trim.png"),
+    photo: SERVICE_PHOTOS.beard,
   },
   {
     id: "4",
@@ -35,7 +42,7 @@ export const MOCK_SERVICES: Service[] = [
     price: 25,
     duration: 25,
     category: "kids",
-    photo: require("@/assets/service-images/kids_haircut_style.png"),
+    photo: SERVICE_PHOTOS.kids,
   },
 ];
 
